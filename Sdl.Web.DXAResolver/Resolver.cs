@@ -191,12 +191,12 @@ namespace Sdl.Web.DXAResolver
             }
             if (components.Count <= 0) return toResolve;
             var toProcess = new HashSet<Component>();
-            var depths = new Dictionary<Component, int>();
+            var depths = new Dictionary<string, int>();
             for (int i = 0; i < components.Count; i++)
             { // note: avoiding recursive approach here so we can truely do infinite depth without stack overflows
                 var c = components[i];
                 int depth = recurseLevel;
-                if (depths.ContainsKey(c)) depth = depths[c];
+                if (depths.ContainsKey(c.Id)) depth = depths[c.Id];
                 if (!ContinueRecursion(depth)) continue;
                 if (toProcess.Contains(c)) continue;
                 toProcess.Add(c);
@@ -206,13 +206,13 @@ namespace Sdl.Web.DXAResolver
                     if (!ContinueRecursion(depth + 1)) break;
                     if (toProcess.Contains(linkedComponent)) continue;
                     components.Add(linkedComponent);
-                    if (depths.ContainsKey(linkedComponent))
+                    if (depths.ContainsKey(linkedComponent.Id))
                     {
-                        depths[linkedComponent] = depth + 1;
+                        depths[linkedComponent.Id] = depth + 1;
                     }
                     else
                     {
-                        depths.Add(linkedComponent, depth + 1);
+                        depths.Add(linkedComponent.Id, depth + 1);
                     }                    
                 }
             }
